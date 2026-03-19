@@ -186,6 +186,7 @@ if (navigator.mediaDevices.getUserMedia) {
 
       stopBtn.disabled = false;
       startBtn.disabled = true;
+      document.getElementById('VoiceBtn').classList.add('recording');
     };
 
     startBtn.onclick = onListenBG;
@@ -210,6 +211,7 @@ if (navigator.mediaDevices.getUserMedia) {
 
       stopBtn.disabled = true;
       startBtn.disabled = false;
+      document.getElementById('VoiceBtn').classList.remove('recording');
 
       var clipName = new Date().toISOString();
 
