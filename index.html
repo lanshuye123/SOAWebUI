@@ -8,12 +8,17 @@
   <style>
     /* CSS 变量定义 */
     :root {
-      --primary-dark: #1a1a1a;
-      --primary-light: #ffffff;
-      --primary-gray: #808080;
-      --accent-dark: #2d2d2d;
-      --accent-light: #e0e0e0;
-      --border-color: #000;
+      --primary-dark: #0f2740;
+      --primary-light: #eaf6ff;
+      --primary-gray: #8ec9f2;
+      --primary-hover: #6fb8ea;
+      --accent-dark: #1b3e5d;
+      --accent-light: #cfeaff;
+      --border-color: #a9d8f7;
+      --text-muted: #b9d7ec;
+      --text-disabled: #7f9fb6;
+      --panel-bg: rgba(20, 40, 60, 0.38);
+      --shadow-color: rgba(8, 24, 38, 0.75);
       --pixel-font: 'Press Start 2P', monospace;
     }
 
@@ -45,15 +50,6 @@
       height: 100%;
       object-fit: cover;
       z-index: -3;
-      filter: grayscale(100%);
-      pointer-events: none;
-    }
-
-    .bg-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      background: rgba(0, 0, 0, 0.48);
       pointer-events: none;
     }
 
@@ -71,8 +67,8 @@
       font-size: 24px;
       color: var(--primary-light);
       text-shadow: 
-        3px 3px 0px var(--border-color),
-        6px 6px 0px rgba(255, 255, 255, 0.3);
+        3px 3px 0px var(--shadow-color),
+        0 0 14px rgba(169, 216, 247, 0.4);
       margin-bottom: 30px;
       letter-spacing: 2px;
       animation: pixelGlow 1.5s infinite alternate;
@@ -81,24 +77,25 @@
     @keyframes pixelGlow {
       0% {
         text-shadow: 
-          3px 3px 0px var(--border-color),
-          6px 6px 0px rgba(255, 255, 255, 0.3);
+          3px 3px 0px var(--shadow-color),
+          0 0 8px rgba(169, 216, 247, 0.28);
       }
       100% {
         text-shadow: 
-          3px 3px 0px var(--border-color),
-          6px 6px 0px rgba(255, 255, 255, 0.6);
+          3px 3px 0px var(--shadow-color),
+          0 0 14px rgba(169, 216, 247, 0.5);
       }
     }
 
     #status {
       font-family: var(--pixel-font);
       font-size: 12px;
-      color: var(--accent-light);
+      color: var(--text-muted);
       text-align: center;
       margin-bottom: 20px;
       min-height: 20px;
       letter-spacing: 1px;
+      text-shadow: 1px 1px 0px var(--shadow-color);
     }
 
     .loading {
@@ -125,32 +122,33 @@
       font-family: var(--pixel-font);
       font-size: 14px;
       background-color: var(--primary-gray);
-      color: var(--primary-light);
+      color: #0d2236;
       border: 2px solid var(--border-color);
       padding: 12px 20px;
       cursor: pointer;
-      text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+      text-shadow: 1px 1px 0px rgba(234, 246, 255, 0.25);
       transition: all 0.1s;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
     button:hover:not(:disabled) {
-      background-color: var(--accent-light);
-      color: var(--border-color);
+      background-color: var(--primary-hover);
+      color: var(--primary-light);
       transform: translate(-2px, -2px);
-      box-shadow: 4px 4px 0px var(--border-color);
+      box-shadow: 4px 4px 0px var(--shadow-color);
     }
 
     button:active:not(:disabled) {
       transform: translate(2px, 2px);
-      box-shadow: 0px 0px 0px var(--border-color);
+      box-shadow: 0px 0px 0px var(--shadow-color);
     }
 
     button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       background-color: var(--accent-dark);
+      color: var(--text-disabled);
     }
 
     #startBtn {
@@ -158,29 +156,29 @@
     }
 
     #stopBtn {
-      background-color: #4a4a4a;
+      background-color: #5da6d6;
     }
 
     #clearBtn {
-      background-color: var(--primary-gray);
+      background-color: #7bbfe8;
     }
 
     .transcript-label {
       font-family: var(--pixel-font);
       font-size: 12px;
       color: var(--primary-light);
-      text-shadow: 2px 2px 0px var(--border-color);
+      text-shadow: 1px 1px 0px var(--shadow-color);
       letter-spacing: 1px;
       padding: 10px;
       border: 2px solid var(--border-color);
-      background-color: var(--accent-dark);
+      background-color: var(--panel-bg);
     }
 
     textarea {
       font-family: 'Courier New', monospace;
       font-size: 12px;
-      background-color: var(--accent-dark);
-      color: var(--accent-light);
+      background-color: var(--panel-bg);
+      color: var(--primary-light);
       border: 2px solid var(--border-color);
       padding: 12px;
       resize: none;
@@ -195,17 +193,17 @@
     }
 
     textarea::-webkit-scrollbar-track {
-      background: var(--accent-dark);
+      background: var(--panel-bg);
       border: 2px solid var(--border-color);
     }
 
     textarea::-webkit-scrollbar-thumb {
-      background: var(--primary-gray);
+      background: var(--primary-hover);
       border: 2px solid var(--border-color);
     }
 
     textarea::placeholder {
-      color: var(--primary-gray);
+      color: var(--text-muted);
       opacity: 0.7;
     }
 
@@ -215,50 +213,50 @@
       width: 160px;
       height: 160px;
       border: 4px solid var(--border-color);
-      background-color: var(--primary-gray);
-      color: var(--primary-light);
+      background-color: var(--primary-hover);
+      color: #0d2236;
       border-radius: 0;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      text-shadow: 3px 3px 0px var(--border-color);
+      text-shadow: 1px 1px 0px rgba(234, 246, 255, 0.35);
       transition: all 0.1s;
       text-transform: uppercase;
       letter-spacing: 1px;
       margin-bottom: 30px;
       line-height: 1.4;
       padding: 16px;
-      box-shadow: 8px 8px 0px var(--border-color);
+      box-shadow: 8px 8px 0px var(--shadow-color);
     }
 
     #VoiceBtn:hover {
       background-color: var(--accent-light);
-      color: var(--border-color);
+      color: #10283f;
       transform: translate(-4px, -4px);
-      box-shadow: 12px 12px 0px var(--border-color);
+      box-shadow: 12px 12px 0px var(--shadow-color);
     }
 
     #VoiceBtn:active {
       transform: translate(4px, 4px);
-      box-shadow: 4px 4px 0px var(--border-color);
+      box-shadow: 4px 4px 0px var(--shadow-color);
       background-color: var(--accent-dark);
       color: var(--primary-light);
     }
 
     #VoiceBtn.recording {
       animation: pixelPulse 0.5s infinite;
-      background-color: #5a5a5a;
-      box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.5), 8px 8px 0px var(--border-color);
+      background-color: #9dd6fa;
+      box-shadow: inset 0px 0px 20px rgba(16, 40, 63, 0.45), 8px 8px 0px var(--shadow-color);
     }
 
     @keyframes pixelPulse {
       0%, 100% {
-        background-color: #5a5a5a;
+        background-color: #9dd6fa;
       }
       50% {
-        background-color: var(--primary-gray);
+        background-color: var(--primary-hover);
       }
     }
 
@@ -272,7 +270,7 @@
     }
 
     .clip {
-      background-color: var(--accent-dark);
+      background-color: var(--panel-bg);
       border: 2px solid var(--border-color);
       padding: 12px;
       display: flex;
@@ -282,9 +280,9 @@
     }
 
     .clip:hover {
-      background-color: var(--primary-gray);
+      background-color: rgba(39, 84, 119, 0.62);
       transform: translate(-2px, -2px);
-      box-shadow: 4px 4px 0px var(--border-color);
+      box-shadow: 4px 4px 0px var(--shadow-color);
     }
 
     .clip audio {
@@ -298,7 +296,7 @@
       font-size: 11px;
       color: var(--primary-light);
       cursor: pointer;
-      text-shadow: 1px 1px 0px var(--border-color);
+      text-shadow: 1px 1px 0px var(--shadow-color);
       word-break: break-all;
       letter-spacing: 0.5px;
     }
@@ -312,7 +310,7 @@
       font-family: var(--pixel-font);
       font-size: 11px;
       background-color: var(--accent-light);
-      color: var(--border-color);
+      color: #10283f;
       border: 2px solid var(--border-color);
       padding: 6px 10px;
       cursor: pointer;
@@ -322,14 +320,15 @@
     }
 
     .delete:hover {
-      background-color: var(--primary-light);
+      background-color: var(--primary-hover);
+      color: var(--primary-light);
       transform: translate(-1px, -1px);
-      box-shadow: 2px 2px 0px var(--border-color);
+      box-shadow: 2px 2px 0px var(--shadow-color);
     }
 
     .delete:active {
       transform: translate(1px, 1px);
-      box-shadow: 0px 0px 0px var(--border-color);
+      box-shadow: 0px 0px 0px var(--shadow-color);
     }
 
     /* 响应式设计 */
@@ -366,7 +365,6 @@
   <video class="video-bg" autoplay muted loop playsinline>
     <source src="3月19日.mp4" type="video/mp4">
   </video>
-  <div class="bg-overlay"></div>
 
   <div class="app-shell">
   <h1>
