@@ -7,6 +7,8 @@ const stopBtn = document.getElementById('stopBtn');
 const clearBtn = document.getElementById('clearBtn');
 const soundClips = document.getElementById('sound-clips');
 
+const llmResult = document.getElementById('llm_result')
+
 let textArea = document.getElementById('results');
 
 let lastResult = '';
@@ -88,6 +90,8 @@ let recordingLength = 0; // number of samples so far
 
 let recognizer = null;
 let recognizer_stream = null;
+
+let GlobalResult = "";
 
 if (navigator.mediaDevices.getUserMedia) {
   console.log('getUserMedia supported.');
@@ -212,6 +216,14 @@ if (navigator.mediaDevices.getUserMedia) {
       stopBtn.disabled = true;
       startBtn.disabled = false;
       document.getElementById('VoiceBtn').classList.remove('recording');
+
+      (()=>{
+        // AI_ASK
+        ai_ask(lastResult).then((data)=>{
+          console.log(data)
+          llmResult.innerText += JSON.stringify(data) +'\r\n';
+        })
+      })()
 
       var clipName = new Date().toISOString();
 
