@@ -375,7 +375,7 @@ textarea::placeholder {
   }
 
   #VoiceBtn {
-    width: 140px;
+    /* width: 140px; */
     height: 140px;
     font-size: 14px;
   }
