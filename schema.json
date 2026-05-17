@@ -6,6 +6,14 @@
             "type":"string",
             "description": "关于用户这个命令的一部分思考信息，可以辅助后文决策"
         },
+        "repo_id":{
+            "type":"string",
+            "description": "对应的HuggingFace数据集仓库ID，用于后续replay接口调用。可选: lerobot/change_type_v4(物体互换), lerobot/fold_mope_v1(折叠操作)"
+        },
+        "episode":{
+            "type":"integer",
+            "description": "对应的episode编号，用于后续replay接口调用"
+        },
         "actions":{
             "type":"array",
             "description": "调度系统决定让各个组件执行的动作合集",

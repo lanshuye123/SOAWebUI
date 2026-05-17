@@ -1,12 +1,26 @@
 (()=>{
 
     let SysPrompt = `你是一个通过语音驱动的人工智能机械臂的调度模块中使用到的LLM，你会接收到语音转文字模块提供的用户输入，但可能识别的内容不完全正确；你应该尽力解读用户的意图，并将其转换为机械臂的VLA小模型拟执行的动作指令，并将其使用如下描述的JSON格式来进行分析。
+
+当前可用的动作仓库(repo_id)：
+1. lerbot/change_type_v4 —— 将桌面上两个物体互换位置
+2. lerbot/fold_mope_v1 —— 叠衣服、叠抹布等折叠类操作
+3. lerbot/pick_down_v3 —— 从高处拿起一个物品放到桌面上
+
+你需要根据用户指令选择合适的repo_id，episode默认为0。
+
 输入示例：
 请帮我叠衣服
+输出示例：
+{"thinking":"用户期望我叠衣服，这需要我操纵机械臂来叠衣服","repo_id":"lerbot/fold_mope_v1","episode":0,"actions":[{"node":"arm","task":"叠衣服","possibility":0.8}]}
+
 输入示例：
-{"thinking":"用户期望我叠衣服，这需要我操纵机械臂来叠衣服","actions":[{"node":"arm","task":"叠衣服","possibility":0.8}]}
+把苹果和香蕉互换
+输出示例：
+{"thinking":"用户想把苹果和香蕉互换位置","repo_id":"lerbot/change_type_v4","episode":0,"actions":[{"node":"arm","task":"将桌面上两个物体互换","possibility":0.9}]}
+
 Schema:
-{"thinking":{"type":"string","description": "关于用户这个命令的一部分思考信息，可以辅助后文决策"},"actions":{"type":"array","description": "调度系统决定让各个组件执行的动作合集","items": {"type":"object","description": "具体的一个动作","properties": {"node":{"type":"string","description": "执行节点，例如arm表示机械臂"},"task":{"type":"string","description": "以最简单轻量化的方式向VLA子模型提供的语言文本描述"},"possibility":{"type":"number","description": "你认为这个任务能否执行，如果小于0.7，则在下文再创建一个更靠谱的任务"}}}}}`
+{"thinking":{"type":"string","description": "关于用户这个命令的一部分思考信息，可以辅助后文决策"},"repo_id":{"type":"string","description": "对应的HuggingFace数据集仓库ID，用于后续replay接口调用，当前可选lerbot/change_type_v4或lerbot/fold_mope_v1"},"episode":{"type":"integer","description": "对应的episode编号，用于后续replay接口调用，默认为0"},"actions":{"type":"array","description": "调度系统决定让各个组件执行的动作合集","items": {"type":"object","description": "具体的一个动作","properties": {"node":{"type":"string","description": "执行节点，例如arm表示机械臂"},"task":{"type":"string","description": "以最简单轻量化的方式向VLA子模型提供的语言文本描述"},"possibility":{"type":"number","description": "你认为这个任务能否执行，如果小于0.7，则在下文再创建一个更靠谱的任务"}}}}}`
 
     let postData = {
         "messages": [
@@ -50,6 +64,7 @@ Schema:
     })();
 
     let BaseURL = "https://api.deepseek.com/chat/completions";
+    let ReplayURL = "http://0.0.0.0:8000/api/replay";
 
     const ipmi_ask = ((payload)=>{
         return fetch(BaseURL,{
@@ -62,6 +77,21 @@ Schema:
             "body":JSON.stringify(payload)
         })
     })
+
+    var replay_ask = ((repo_id, episode)=>{
+        return fetch(ReplayURL,{
+            "method":"POST",
+            "headers":{
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            "body":JSON.stringify({
+                "repo_id": repo_id,
+                "episode": episode
+            })
+        })
+    });
+    globalThis['replay_ask'] = replay_ask;
 
     var ai_ask = ((text)=>{
         return new Promise((r,j)=>{

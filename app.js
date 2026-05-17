@@ -23,6 +23,7 @@ clearBtn.onclick = function() {
   resultList = [];
   textArea.value = getDisplayResult();
   textArea.scrollTop = textArea.scrollHeight; // auto scroll
+  llmResult.value = '';
 };
 
 function getDisplayResult() {
@@ -246,6 +247,13 @@ if (navigator.mediaDevices.getUserMedia) {
         ai_ask(resultList.join()).then((data)=>{
           console.log(data)
           llmResult.innerText += JSON.stringify(data) +'\r\n';
+          if(data.repo_id !== undefined && data.episode !== undefined){
+            replay_ask(data.repo_id, data.episode).then((res)=>{
+              console.log('replay response:', res)
+            }).catch((err)=>{
+              console.error('replay failed:', err)
+            })
+          }
         })
       })()
 
